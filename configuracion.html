@@ -1,0 +1,16 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Configuración · Finanzas</title><link rel="stylesheet" href="estilos.css"></head><body>
+<header class="top"><a class="ib" href="index.html" aria-label="Volver">‹</a><h1>Configuración</h1><span class="ib"></span></header>
+<label for="mon" style="margin-top:8px">Moneda</label><select id="mon"><option>$</option><option>€</option><option>£</option><option>S/</option></select>
+<label for="lim">Límite mensual de gasto (0 = sin límite)</label><input id="lim" type="number" inputmode="decimal" min="0" step="0.01">
+<div class="stack"><button class="btn pri" id="g">Guardar cambios</button></div>
+<h2>Datos</h2>
+<div class="stack" style="margin-top:0"><button class="btn" id="exp">Exportar datos (JSON)</button><button class="btn" id="rei">Reiniciar compras</button><button class="btn dng" id="bor">Borrar todo</button></div>
+<script src="app.js"></script>
+<script>
+const s=App.s(),$=App.$;
+$('#mon').value=s.moneda;$('#lim').value=s.limite||'';
+$('#g').onclick=()=>{App.set({moneda:$('#mon').value,limite:Math.max(0,parseFloat($('#lim').value)||0)});App.toast('Cambios guardados')};
+$('#exp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(s,null,2)],{type:'application/json'}));a.download='finanzas.json';a.click()};
+$('#rei').onclick=()=>{if(confirm('¿Eliminar todas las compras? Tus metas y perfil se conservan.')){App.reset();App.toast('Compras reiniciadas')}};
+$('#bor').onclick=()=>{if(confirm('¿Borrar todos los datos? No se puede deshacer.')){App.wipe();location.href='index.html'}};
+</script></body></html>

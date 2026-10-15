@@ -1,0 +1,16 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Perfil · Finanzas</title><link rel="stylesheet" href="estilos.css"></head><body>
+<header class="top"><a class="ib" href="index.html" aria-label="Volver">‹</a><h1>Perfil</h1><span class="ib"></span></header>
+<div style="display:flex;align-items:center;gap:14px;margin:8px 0 4px"><span class="av" id="av" style="width:56px;height:56px;font-size:22px"></span><div><b id="nom"></b><p class="sub" id="res"></p></div></div>
+<form id="f"><label for="n">Nombre de usuario</label><input id="n" maxlength="30">
+<label for="i">Presupuesto mensual</label><input id="i" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00">
+<p class="bad sub" id="e" style="margin-top:10px"></p>
+<div class="stack"><button class="btn pri" type="submit">Guardar cambios</button></div></form>
+<script src="app.js"></script>
+<script>
+const s=App.s(),$=App.$;
+function cab(){$('#av').textContent=s.nombre.trim().charAt(0).toUpperCase()||'N';$('#nom').textContent=s.nombre;$('#res').textContent=s.compras.length+' compras · '+s.metas.length+' metas'}
+cab();$('#n').value=s.nombre;$('#i').value=s.ingreso||'';
+$('#f').onsubmit=e=>{e.preventDefault();const n=$('#n').value.trim(),i=parseFloat($('#i').value)||0;
+ if(!n)return $('#e').textContent='Escribe un nombre.';if(i<0)return $('#e').textContent='El presupuesto no puede ser negativo.';
+ App.set({nombre:n,ingreso:i});cab();$('#e').textContent='';App.toast('Cambios guardados')};
+</script></body></html>

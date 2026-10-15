@@ -1,0 +1,26 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Metas · Finanzas</title><link rel="stylesheet" href="estilos.css"></head><body>
+<header class="top"><a class="ib" href="index.html" aria-label="Volver">‹</a><h1>Metas</h1><span class="ib"></span></header>
+<button class="btn pri" id="nueva">Nueva meta</button>
+<div id="lista" style="margin-top:16px"></div>
+<script src="app.js"></script>
+<script>
+const s=App.s(),$=App.$;
+function pintar(){
+ $('#lista').innerHTML=s.metas.length?s.metas.map(m=>{const p=Math.min(100,Math.round(m.ahorrado/m.objetivo*100));return`<div class="card"><div class="item" style="padding:0;background:none"><b>${App.esc(m.nombre)}</b><span class="amt sub">${p}%</span></div><div class="bar"><i style="width:${p}%"></i></div><p class="sub">${App.money(m.ahorrado)} de ${App.money(m.objetivo)}</p><div style="display:flex;gap:8px;margin-top:12px"><button class="btn sm" data-a="${m.id}">Aportar</button><button class="btn sm dng" data-d="${m.id}">Eliminar</button></div></div>`}).join(''):'<div class="empty">Sin metas todavía. Crea una para empezar a ahorrar con un objetivo.</div>';
+}
+pintar();
+$('#nueva').onclick=()=>{
+ const m=App.sheet('<h3>Nueva meta</h3><label for="n">Nombre</label><input id="n" maxlength="40" placeholder="Ej. Viaje"><label for="o">Monto objetivo</label><input id="o" type="number" inputmode="decimal" min="1" step="0.01"><p class="bad sub" id="e"></p><div class="stack"><button class="btn pri" id="ok">Guardar</button><button class="btn" id="no">Cancelar</button></div>');
+ $('#no',m.el).onclick=m.close;
+ $('#ok',m.el).onclick=()=>{const n=$('#n',m.el).value.trim(),o=parseFloat($('#o',m.el).value);if(!n||!(o>0))return $('#e',m.el).textContent='Escribe un nombre y un monto mayor a cero.';s.metas.push({id:App.uid(),nombre:n,objetivo:o,ahorrado:0});App.save();m.close();pintar()};
+};
+$('#lista').onclick=e=>{
+ const a=e.target.dataset.a,d=e.target.dataset.d;
+ if(d&&confirm('¿Eliminar esta meta?')){s.metas=s.metas.filter(m=>m.id!==d);App.save();pintar()}
+ if(a){const meta=s.metas.find(m=>m.id===a);
+  const m=App.sheet(`<h3>Aportar a ${App.esc(meta.nombre)}</h3><label for="x">Cantidad</label><input id="x" type="number" inputmode="decimal" min="0.01" step="0.01"><p class="bad sub" id="e"></p><div class="stack"><button class="btn pri" id="ok">Aportar</button><button class="btn" id="no">Cancelar</button></div>`);
+  $('#no',m.el).onclick=m.close;
+  $('#ok',m.el).onclick=()=>{const x=parseFloat($('#x',m.el).value);if(!(x>0))return $('#e',m.el).textContent='Escribe una cantidad mayor a cero.';meta.ahorrado+=x;if(meta.ahorrado>=meta.objetivo)App.notify('Meta cumplida: '+meta.nombre+'.');App.save();m.close();pintar();App.toast('Aporte guardado')};
+ }
+};
+</script></body></html>

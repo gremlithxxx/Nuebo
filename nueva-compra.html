@@ -1,0 +1,42 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Compra · Finanzas</title><link rel="stylesheet" href="estilos.css"></head><body>
+<header class="top"><a class="ib" href="index.html" aria-label="Volver">‹</a><h1 id="tit">Nueva compra</h1><span class="ib"></span></header>
+<form id="f" novalidate>
+ <label for="monto">Cantidad</label><input id="monto" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="0.00" required>
+ <label for="cat">Categoría</label><select id="cat"></select>
+ <input id="nueva" placeholder="Nombre de la nueva categoría" style="margin-top:10px" hidden>
+ <label for="con">Concepto</label><input id="con" maxlength="60" placeholder="Ej. Supermercado" required>
+ <p class="bad sub" id="err" style="margin-top:12px" role="alert"></p>
+ <div class="stack">
+  <button class="btn pri" type="submit">Guardar</button>
+  <button class="btn" type="button" id="rei">Reiniciar</button>
+  <button class="btn dng" type="button" id="del" hidden>Eliminar</button>
+ </div>
+</form>
+<script src="app.js"></script>
+<script>
+const s=App.s(),$=App.$,id=new URLSearchParams(location.search).get('id');
+const sel=$('#cat');
+const fill=v=>{sel.innerHTML=App.cats().map(c=>`<option>${App.esc(c)}</option>`).join('')+'<option value="__n">+ Agregar categoría</option>';if(v)sel.value=v};
+fill();
+sel.onchange=()=>{$('#nueva').hidden=sel.value!=='__n';if(sel.value==='__n')$('#nueva').focus()};
+const ed=s.compras.find(c=>c.id===id);
+if(ed){$('#tit').textContent='Editar compra';$('#monto').value=ed.monto;sel.value=ed.cat;$('#con').value=ed.concepto;$('#del').hidden=false}
+$('#rei').onclick=()=>{$('#f').reset();$('#nueva').hidden=true;$('#err').textContent='';if(ed){$('#monto').value=ed.monto;sel.value=ed.cat;$('#con').value=ed.concepto}};
+$('#del').onclick=()=>{if(!confirm('¿Eliminar esta compra?'))return;s.compras=s.compras.filter(c=>c.id!==id);App.save();location.href='index.html'};
+$('#f').onsubmit=e=>{
+ e.preventDefault();
+ const monto=parseFloat($('#monto').value),con=$('#con').value.trim();let cat=sel.value;
+ if(cat==='__n'){cat=$('#nueva').value.trim();if(cat&&!App.cats().includes(cat))s.extra.push(cat)}
+ if(!(monto>0))return $('#err').textContent='Escribe una cantidad mayor a cero.';
+ if(!cat)return $('#err').textContent='Elige o escribe una categoría.';
+ if(!con)return $('#err').textContent='Escribe un concepto.';
+ if(ed)Object.assign(ed,{monto,cat,concepto:con});
+ else s.compras.push({id:App.uid(),monto,cat,concepto:con,fecha:new Date().toISOString()});
+ App.save();
+ const g=App.gastado(),r=App.salud();
+ if(s.limite>0&&g>s.limite)App.notify('Superaste tu límite mensual de '+App.money(s.limite)+'.');
+ else if(s.ingreso>0&&r.ratio>=1)App.notify('Tus gastos superan tu presupuesto.');
+ else if(s.ingreso>0&&r.ratio>=.8)App.notify('Ya usaste el '+Math.round(r.ratio*100)+'% de tu presupuesto.');
+ location.href='index.html';
+};
+</script></body></html>

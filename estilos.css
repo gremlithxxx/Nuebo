@@ -1,0 +1,54 @@
+:root{--bg:#0E1013;--s1:#15181D;--s2:#1C2026;--line:#2A2F37;--tx:#E8EAED;--mut:#8B929D;--ac:#C9B48A;--ok:#7FB69A;--warn:#D3A55F;--bad:#C97B7B;--r:6px}
+*{box-sizing:border-box;margin:0}
+html{background:var(--bg)}
+body{font:15px/1.5 "IBM Plex Sans","Segoe UI",system-ui,sans-serif;color:var(--tx);background:var(--bg);max-width:480px;min-height:100vh;margin:0 auto;padding:0 20px 40px}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.top{display:flex;align-items:center;justify-content:space-between;height:64px}
+.top h1{font-size:16px;font-weight:600}
+.user{display:flex;align-items:center;gap:10px;font-weight:500}
+.av{width:34px;height:34px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;color:var(--ac);font-weight:600;background:var(--s1)}
+.acts{display:flex;gap:4px}
+.ib{width:40px;height:40px;display:grid;place-items:center;border-radius:var(--r);color:var(--mut);position:relative;font-size:22px;background:none;border:0;cursor:pointer}
+.ib:hover{color:var(--tx);background:var(--s1)}
+.ib svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.6}
+.dot{position:absolute;top:9px;right:9px;width:7px;height:7px;border-radius:50%;background:var(--ac)}
+.hero{padding:28px 0 24px}
+.hero p{color:var(--mut)}
+.big{font-size:42px;font-weight:300;letter-spacing:-.02em;line-height:1.15;margin:4px 0}
+.sub{color:var(--mut);font-size:13px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 16px;border:1px solid var(--line);border-radius:var(--r);background:var(--s1);color:var(--tx);font:inherit;font-weight:500;cursor:pointer;width:100%}
+.btn:hover{border-color:var(--mut)}
+.btn.pri{background:var(--ac);border-color:var(--ac);color:#0E1013}
+.btn.pri:hover{background:#d6c4a0}
+.btn.dng{color:var(--bad)}
+.btn.sm{min-height:34px;font-size:13px;width:auto;padding:0 12px}
+h2{font-size:14px;font-weight:600;color:var(--mut);margin:28px 0 10px}
+.card{border:1px solid var(--line);border-radius:var(--r);background:var(--s1);padding:16px}
+.card+.card{margin-top:10px}
+.list{border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.item{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;padding:14px 16px;background:var(--s1);border:0;border-bottom:1px solid var(--line);color:inherit;font:inherit;text-align:left;cursor:pointer}
+.item:last-child{border-bottom:0}
+button.item:hover{background:var(--s2)}
+.item small{display:block;color:var(--mut);font-size:12.5px}
+.amt{font-variant-numeric:tabular-nums;white-space:nowrap}
+.empty{padding:22px 16px;text-align:center;color:var(--mut);border:1px dashed var(--line);border-radius:var(--r)}
+label{display:block;font-size:13px;color:var(--mut);margin:18px 0 6px}
+input,select{width:100%;height:46px;padding:0 14px;background:var(--s1);color:var(--tx);border:1px solid var(--line);border-radius:var(--r);font:inherit}
+input:focus,select:focus{outline:none;border-color:var(--ac)}
+select option{background:var(--s1)}
+.stack{display:grid;gap:10px;margin-top:26px}
+.bar{height:6px;background:var(--s2);border-radius:3px;overflow:hidden;margin:10px 0 6px}
+.bar i{display:block;height:100%;background:var(--ac)}
+.k{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}
+.k:last-child{border:0}
+.k span:first-child{color:var(--mut)}
+.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}
+.unread{border-left:2px solid var(--ac)}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center;z-index:9}
+.sheet{width:100%;max-width:480px;background:var(--s1);border:1px solid var(--line);border-radius:12px 12px 0 0;padding:22px 20px 26px}
+.sheet h3{font-size:16px;margin-bottom:4px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--s2);border:1px solid var(--line);padding:10px 16px;border-radius:var(--r);font-size:14px;z-index:10}
+[hidden]{display:none!important}
+@media(prefers-reduced-motion:no-preference){.bar i{transition:width .4s}}

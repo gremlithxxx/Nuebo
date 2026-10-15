@@ -1,0 +1,30 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Simular · Finanzas</title><link rel="stylesheet" href="estilos.css"></head><body>
+<header class="top"><a class="ib" href="index.html" aria-label="Volver">‹</a><h1>Simular</h1><span class="ib"></span></header>
+<h2 style="margin-top:8px">Si hago esta compra</h2>
+<div class="card"><label for="m" style="margin-top:0">Cantidad</label><input id="m" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00">
+ <div id="r1" style="margin-top:12px"></div></div>
+<h2>Plan para una meta</h2>
+<div class="card"><label for="g" style="margin-top:0">Meta</label><select id="g"></select>
+ <label for="t">Meses para lograrla</label><input id="t" type="number" min="1" step="1" value="6">
+ <div id="r2" style="margin-top:12px"></div></div>
+<script src="app.js"></script>
+<script>
+const s=App.s(),$=App.$;
+function sim1(){
+ const m=parseFloat($('#m').value)||0,r=$('#r1');
+ if(!m){r.innerHTML='<p class="sub">Escribe una cantidad para ver el efecto en tu saldo.</p>';return}
+ const h0=App.salud(),h=App.salud(App.gastado()+m),sd=App.saldo()-m;
+ r.innerHTML=`<div class="k"><span>Saldo actual</span><span class="amt">${App.money(App.saldo())}</span></div><div class="k"><span>Saldo después</span><span class="amt ${sd<0?'bad':''}">${App.money(sd)}</span></div><div class="k"><span>Salud financiera</span><span>${h0.score??'—'} → <b class="${h.cls}">${h.score??'—'}</b></span></div>`+(sd<0?'<p class="bad sub" style="margin-top:8px">Esta compra supera tu saldo disponible.</p>':'');
+}
+function sim2(){
+ const r=$('#r2'),meta=s.metas.find(x=>x.id===$('#g').value),t=parseInt($('#t').value)||0;
+ if(!meta){r.innerHTML='<p class="sub">Crea una meta para simular un plan de ahorro.</p>';return}
+ const falta=Math.max(0,meta.objetivo-meta.ahorrado);
+ if(t<1){r.innerHTML='';return}
+ const mes=falta/t;
+ r.innerHTML=`<div class="k"><span>Falta por ahorrar</span><span class="amt">${App.money(falta)}</span></div><div class="k"><span>Aporte mensual</span><b class="amt">${App.money(mes)}</b></div>`+(s.ingreso>0?`<div class="k"><span>Del presupuesto</span><span>${Math.round(mes/s.ingreso*100)}%</span></div>`:'');
+}
+$('#g').innerHTML=s.metas.length?s.metas.map(m=>`<option value="${m.id}">${App.esc(m.nombre)}</option>`).join(''):'<option value="">Sin metas</option>';
+['m'].forEach(i=>$('#'+i).oninput=sim1);['g','t'].forEach(i=>$('#'+i).oninput=sim2);
+sim1();sim2();
+</script></body></html>

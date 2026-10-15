@@ -1,0 +1,15 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Salud financiera · Finanzas</title><link rel="stylesheet" href="estilos.css"></head><body>
+<header class="top"><a class="ib" href="index.html" aria-label="Volver">‹</a><h1>Salud financiera</h1><span class="ib"></span></header>
+<section class="hero" style="padding-top:8px"><div class="big" id="n"></div><p id="l"></p><p class="sub" id="t"></p></section>
+<div class="card" id="k"></div>
+<h2>Gasto por categoría</h2><div id="c"></div>
+<script src="app.js"></script>
+<script>
+const s=App.s(),$=App.$,h=App.salud(),g=App.gastado();
+$('#n').textContent=h.score??'—';$('#n').className='big '+h.cls;$('#l').textContent=h.label;$('#l').className=h.cls;
+$('#t').textContent=h.score===null?'Define tu presupuesto en el perfil para calcular tu salud financiera.':h.ratio>=1?'Tus gastos ya superan tu presupuesto.':'Has usado el '+Math.round(h.ratio*100)+'% de tu presupuesto.';
+$('#k').innerHTML=`<div class="k"><span>Presupuesto</span><span class="amt">${App.money(s.ingreso)}</span></div><div class="k"><span>Gastado</span><span class="amt">${App.money(g)}</span></div><div class="k"><span>Disponible</span><span class="amt">${App.money(App.saldo())}</span></div>`+(s.limite>0?`<div class="k"><span>Límite mensual</span><span class="amt ${g>s.limite?'bad':''}">${App.money(s.limite)}</span></div>`:'');
+const por={};s.compras.forEach(c=>por[c.cat]=(por[c.cat]||0)+c.monto);
+const f=Object.entries(por).sort((a,b)=>b[1]-a[1]);
+$('#c').innerHTML=f.length?'<div class="card">'+f.map(([c,v])=>`<div style="margin-bottom:14px"><div class="item" style="padding:0;background:none"><span>${App.esc(c)}</span><span class="amt sub">${App.money(v)} · ${Math.round(v/g*100)}%</span></div><div class="bar"><i style="width:${v/g*100}%"></i></div></div>`).join('')+'</div>':'<div class="empty">Registra compras para ver en qué gastas más.</div>';
+</script></body></html>

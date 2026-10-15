@@ -1,0 +1,35 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Inicio · Finanzas</title><link rel="stylesheet" href="estilos.css"></head><body>
+<header class="top">
+ <a class="user" href="perfil.html"><span class="av" id="av"></span><span id="nom"></span></a>
+ <div class="acts">
+  <a class="ib" href="notificaciones.html" aria-label="Notificaciones"><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 1 1 12 0v6l1.5 2h-15zM10 21h4"/></svg><i class="dot" id="dot" hidden></i></a>
+  <a class="ib" href="configuracion.html" aria-label="Configuración"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg></a>
+ </div>
+</header>
+<section class="hero"><p id="hola"></p><div class="big" id="saldo"></div><p class="sub" id="gasto"></p></section>
+<div class="row2"><a class="btn" href="metas.html">Metas</a><a class="btn" href="simular.html">Simular</a></div>
+<a class="btn pri" href="nueva-compra.html">Añadir compra</a>
+<a class="card" href="salud.html" style="display:flex;justify-content:space-between;align-items:center;margin-top:10px"><span>Salud financiera<small class="sub" style="display:block" id="saludTxt"></small></span><b id="saludN" style="font-size:22px;font-weight:500"></b></a>
+<h2>Recientes</h2><div id="lista"></div>
+<script src="app.js"></script>
+<script>
+const s=App.s();
+$=App.$;
+$('#av').textContent=s.nombre.trim().charAt(0).toUpperCase()||'N';
+$('#nom').textContent=s.nombre;
+$('#hola').textContent='Hola, '+s.nombre;
+$('#saldo').textContent=App.money(App.saldo());
+$('#gasto').textContent=s.ingreso>0?'Gastado '+App.money(App.gastado())+' de '+App.money(s.ingreso):'Define tu presupuesto en tu perfil';
+$('#dot').hidden=!s.notifs.some(n=>!n.leida);
+const h=App.salud();$('#saludN').textContent=h.score??'—';$('#saludN').className=h.cls;$('#saludTxt').textContent=h.label;
+const l=$('#lista');
+if(!s.compras.length)l.innerHTML='<div class="empty">Aún no hay compras. Añade la primera para ver tu saldo cambiar.</div>';
+else{l.className='list';l.innerHTML=s.compras.slice().reverse().slice(0,8).map(c=>`<button class="item" data-id="${c.id}"><span>${App.esc(c.concepto)}<small>${App.esc(c.cat)} · ${App.fecha(c.fecha)}</small></span><span class="amt">${App.money(c.monto)}</span></button>`).join('');}
+l.addEventListener('click',e=>{
+ const b=e.target.closest('[data-id]');if(!b)return;const id=b.dataset.id;
+ const c=s.compras.find(x=>x.id===id);
+ const m=App.sheet(`<h3>${App.esc(c.concepto)}</h3><p class="sub">${App.money(c.monto)} · ${App.esc(c.cat)}</p><div class="stack"><a class="btn" href="nueva-compra.html?id=${id}">Editar</a><button class="btn dng" id="del">Eliminar</button><button class="btn" id="no">Cancelar</button></div>`);
+ $('#no',m.el).onclick=m.close;
+ $('#del',m.el).onclick=()=>{s.compras=s.compras.filter(x=>x.id!==id);App.save();location.reload()};
+});
+</script></body></html>

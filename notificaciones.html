@@ -1,0 +1,16 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Notificaciones · Finanzas</title><link rel="stylesheet" href="estilos.css"></head><body>
+<header class="top"><a class="ib" href="index.html" aria-label="Volver">‹</a><h1>Notificaciones</h1><span class="ib"></span></header>
+<div id="lista"></div>
+<div class="row2" style="margin-top:16px"><button class="btn" id="leer">Marcar como leídas</button><button class="btn dng" id="borrar">Borrar todas</button></div>
+<script src="app.js"></script>
+<script>
+const s=App.s(),$=App.$;
+function pintar(){
+ const l=$('#lista');
+ if(!s.notifs.length){l.className='';l.innerHTML='<div class="empty">Sin avisos por ahora. Te avisaremos si tu gasto se acerca al presupuesto.</div>';return}
+ l.className='list';l.innerHTML=s.notifs.map(n=>`<div class="item ${n.leida?'':'unread'}"><span>${App.esc(n.txt)}<small>${App.fecha(n.fecha)}</small></span></div>`).join('');
+}
+pintar();
+$('#leer').onclick=()=>{s.notifs.forEach(n=>n.leida=true);App.save();pintar()};
+$('#borrar').onclick=()=>{if(!s.notifs.length||!confirm('¿Borrar todas las notificaciones?'))return;s.notifs=[];App.save();pintar()};
+</script></body></html>
